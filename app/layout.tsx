@@ -1,16 +1,24 @@
-import type { Metadata } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
-import "./globals.css";
-import { cn } from "@/lib/utils";
+import type { Metadata } from 'next';
+import { IBM_Plex_Sans } from 'next/font/google';
+import './globals.css';
+import { cn } from '@/lib/utils';
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs';
 
-const IBMPlex = IBM_Plex_Sans({ subsets: ["latin"],
+const IBMPlex = IBM_Plex_Sans({
+  subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: "--font-ibm-plex",
+  variable: '--font-ibm-plex',
 });
 
 export const metadata: Metadata = {
-  title: "Imaginafi",
-  description: "AI-powered image generation for everyone",
+  title: 'ImaginaFi',
+  description: 'AI-powered image generation for everyone',
 };
 
 export default function RootLayout({
@@ -19,10 +27,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn("font-IMBPlex antialiased", IBMPlex.variable)}>
-        {children}
+    <ClerkProvider>
+      <html lang="en">
+        <body className={cn('font-IBMPlex antialiased', IBMPlex.variable)}>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          {children}
         </body>
-    </html>
+      </html>
+    </ClerkProvider>
   );
 }
+//   return (
+//     <ClerkProvider>
+//       <html lang="en">
+//         <body className={cn("font-IBMPlex antialiased", IBMPlex.variable)}>
+//           <SignedIn>
+//             {/* Mount the UserButton component */}
+//             <UserButton />
+//           </SignedIn>
+//           <SignedOut>
+//             {/* Signed out users get sign in button */}
+//             <SignInButton />
+//           </SignedOut>
+//           {children}
+//         </body>
+//       </html>
+//     </ClerkProvider>
+//   );
+// }
