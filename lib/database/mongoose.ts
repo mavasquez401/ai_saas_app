@@ -16,7 +16,7 @@ if (!cached) {
   };
 }
 
-export const connectionToDatabase = async () => {
+export const connectToDatabase = async () => {
   if (cached.conn) return cached.conn;
 
   if (!MONGODB_URL) throw new Error('Missing MONGODB_URL');
@@ -24,7 +24,7 @@ export const connectionToDatabase = async () => {
   cached.promise =
     cached.promise ||
     mongoose.connect(MONGODB_URL, {
-      dbName: 'MannyDevXL',
+      dbName: 'imaginify',
       bufferCommands: false,
     });
 
@@ -32,3 +32,33 @@ export const connectionToDatabase = async () => {
 
   return cached.conn;
 };
+
+import { MongoClient, ServerApiVersion } from 'mongodb';
+
+const uri = process.env.MONGODB_URL2;
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+async function run(): Promise<void> {
+  try {
+    // Connect the client to the server (optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db('admin').command({ ping: 1 });
+    console.log(
+      'Pinged your deployment. You successfully connected to MongoDB!'
+    );
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+
+run().catch(console.dir);
